@@ -1,0 +1,29 @@
+import requests
+
+response = requests.get("https://boozeapi.com/api/v1/cocktails")
+
+if response.status_code == 200:
+    raw = response.json()
+    cocktails = raw["data"]
+
+    gin_count = 0
+    vodka_count = 0
+    wine_count = 0
+
+    for drink in cocktails:
+        ingredients = [ing.get("name","").lower() for ing in drink.get("ingredients", [])]
+
+        if any("gin" in name for name in ingredients):
+            gin_count += 1
+        if any("vodka" in name for name in ingredients):
+            vodka_count += 1
+        if any("wine" in name for name in ingredients):
+            wine_count += 1
+
+    print("Drink counts:")
+    print(f"Gin-based cocktails: {gin_count}")
+    print(f"Vodka-based cocktails: {vodka_count}")
+    print(f"Wine-based cocktails: {wine_count}")
+
+else:
+    print("Error", response.status_code, response.text)
